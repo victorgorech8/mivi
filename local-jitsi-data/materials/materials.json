@@ -1,0 +1,57 @@
+{
+  "version": 2,
+  "users": [
+    {
+      "id": "493c1ede-faaf-419d-bd10-0a1e347aef35",
+      "username": "admin",
+      "displayName": "Администратор",
+      "passwordHash": "scrypt$389f2f3cc12871fcf2b9c58b80c84035$e20c7b4cf4248b886041cc0e671d77b124085e6cbf7c34e1dd7b85f6291c1b392bccef8f6b5abacd23884c353500dc6d04622dcb46cc92e80333ab53f4c9242f",
+      "role": "admin",
+      "active": true,
+      "createdAt": "2026-10-02T13:10:46.579Z"
+    }
+  ],
+  "notes": [],
+  "sessions": [
+    {
+      "id": "8GawRYBMqIYBE2OlTrGf-407JgU8Hg3iqIRcZ0ESDJU",
+      "userId": "493c1ede-faaf-419d-bd10-0a1e347aef35",
+      "csrfToken": "DtJC85WtLG8-1Y98d1Dy-pOKOJ41_v49",
+      "expiresAt": "2026-10-03T03:12:07.304Z"
+    }
+  ],
+  "chatMessages": [
+    {
+      "id": "2bada54f-7037-4146-8de8-59b0ea6ffb31",
+      "roomId": "meeting-b5488abee17c442c9c",
+      "sourceMessageId": "84ac885d-fad9-4fb6-933a-f6dbb12fee08",
+      "authorName": "вафываацу",
+      "body": "fasefaedsf",
+      "createdAt": "2026-10-02T15:10:43.000Z"
+    },
+    {
+      "id": "33253d08-e1e5-41f6-abda-89401e67d1ad",
+      "roomId": "meeting-b5488abee17c442c9c",
+      "sourceMessageId": "52109caf-cd44-4ddc-9a4a-b42f17cb1b15",
+      "authorName": "вафываацу",
+      "body": "fqafadsfasdf",
+      "createdAt": "2026-10-02T15:10:45.000Z"
+    },
+    {
+      "id": "34867539-af30-4e54-8972-cbf89707c401",
+      "roomId": "meeting-b5488abee17c442c9c",
+      "sourceMessageId": "403eb6dd-002c-4c14-839d-6232829e6658",
+      "authorName": "вафываацу",
+      "body": "werwer",
+      "createdAt": "2026-10-02T15:10:46.000Z"
+    },
+    {
+      "id": "d37a83bc-562c-4456-a4fe-ebf640dd807d",
+      "roomId": "meeting-b5488abee17c442c9c",
+      "sourceMessageId": "615ca64c-9dba-40f4-bc49-f8069851588b",
+      "authorName": "ацукц",
+      "body": "кпукпыукпеыувап",
+      "createdAt": "2026-10-02T15:12:37.000Z"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Конференция</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <style>
+        :root {
+            color: #172033;
+            background: #f5f7fb;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: grid;
+            min-width: 280px;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background:
+                radial-gradient(circle at 100% 0, #dbe7ff 0, transparent 18rem),
+                #f5f7fb;
+        }
+
+        main {
+            align-self: start;
+            padding: 24px;
+            border: 1px solid #d9e1ef;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 12px 32px rgba(16, 24, 40, 0.08);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 21px;
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: #2f6fec;
+            box-shadow: 0 5px 12px rgba(47, 111, 236, 0.25);
+        }
+
+        h1 {
+            margin: 0 0 9px;
+            font-size: 21px;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            margin: 0;
+            color: #475467;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        button {
+            width: 100%;
+            min-height: 43px;
+            margin-top: 21px;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 9px;
+            color: #fff;
+            background: #2f6fec;
+            box-shadow: 0 5px 12px rgba(47, 111, 236, 0.2);
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+        }
+
+        button:hover { background: #245ed2; }
+        button:focus-visible { outline: 3px solid #a9c3ff; outline-offset: 2px; }
+        button:disabled { cursor: wait; opacity: 0.68; }
+
+        .status {
+            min-height: 21px;
+            margin-top: 15px;
+            color: #475467;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .status.error { color: #b42318; }
+        .link {
+            display: none;
+            overflow-wrap: anywhere;
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            color: #175cd3;
+            background: #eff4ff;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .link.visible { display: block; }
+
+        .local-note {
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #eaecf0;
+            color: #667085;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="brand"><span class="mark" aria-hidden="true"></span><span>Конференция</span></div>
+        <h1>Приглашение на встречу</h1>
+        <p>Будет создана новая уникальная комната и вставлена ссылка в текущую позицию курсора.</p>
+        <button id="insert-button" type="button">Вставить приглашение</button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <a id="meeting-link" class="link" target="_blank" rel="noopener noreferrer"></a>
+        <p class="local-note">Ссылка ведёт на localhost и доступна только на этом компьютере.</p>
+    </main>
+
+    <script>
+        (() => {
+            const baseUrl = 'https://localhost:8443';
+            const button = document.getElementById('insert-button');
+            const status = document.getElementById('status');
+            const meetingLink = document.getElementById('meeting-link');
+
+            const setStatus = (text, isError = false) => {
+                status.textContent = text;
+                status.classList.toggle('error', isError);
+            };
+
+            const makeRoomId = () => {
+                const random = window.crypto?.randomUUID?.().replaceAll('-', '')
+                    || `${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
+
+                return `meeting-${random.slice(0, 18)}`;
+            };
+
+            const materialsUrl = roomId => `${baseUrl}/materials/meeting/${encodeURIComponent(roomId)}`;
+
+            const buildInvitationHtml = (url, artifactsUrl) => `
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;width:100%;font-family:Segoe UI,Arial,sans-serif;border:1px solid #d9e1ef;border-radius:12px;background:#ffffff;">
+                    <tr>
+                        <td style="padding:24px;">
+                            <p style="margin:0 0 8px;color:#172033;font-size:18px;font-weight:700;line-height:1.35;">Видеоконференция</p>
+                            <p style="margin:0 0 20px;color:#475467;font-size:14px;line-height:1.5;">Присоединяйтесь к встрече по ссылке.</p>
+                            <a href="${url}" style="display:inline-block;padding:11px 17px;border-radius:7px;background:#2f6fec;color:#ffffff;font-size:14px;font-weight:700;line-height:1.2;text-decoration:none;">Присоединиться к конференции</a>
+                            <p style="margin:16px 0 0;color:#475467;font-size:14px;line-height:1.5;"><a href="${artifactsUrl}" style="color:#175cd3;">Материалы встречи: сообщения и записи</a></p>
+                            <p style="margin:20px 0 0;color:#667085;font-size:12px;line-height:1.45;">Эта локальная ссылка работает только на компьютере, где запущена конференция.</p>
+                        </td>
+                    </tr>
+                </table>`;
+
+            const buildInvitationText = (url, artifactsUrl) => [
+                'Видеоконференция',
+                '',
+                'Присоединиться к встрече:',
+                url,
+                '',
+                'Материалы встречи (сообщения и записи):',
+                artifactsUrl,
+                '',
+                'Эта локальная ссылка работает только на компьютере, где запущена конференция.'
+            ].join('\n');
+
+            const insertInvitation = () => {
+                if (!Office.context.requirements.isSetSupported('Mailbox', '1.3')) {
+                    setStatus('Эта версия Outlook не поддерживает надстройку (нужен Mailbox 1.3).', true);
+                    return;
+                }
+
+                const item = Office.context.mailbox.item;
+                if (!item?.body?.getTypeAsync || !item.body.setSelectedDataAsync) {
+                    setStatus('Откройте новое письмо или событие календаря для вставки приглашения.', true);
+                    return;
+                }
+
+                button.disabled = true;
+                setStatus('Создаём ссылку и вставляем приглашение…');
+                const roomId = makeRoomId();
+                const url = `${baseUrl}/${encodeURIComponent(roomId)}`;
+                const artifactsUrl = materialsUrl(roomId);
+
+                item.body.getTypeAsync(typeResult => {
+                    if (typeResult.status !== Office.AsyncResultStatus.Succeeded) {
+                        button.disabled = false;
+                        setStatus(`Не удалось определить формат письма: ${typeResult.error.message}`, true);
+                        return;
+                    }
+
+                    const isHtml = typeResult.value === Office.CoercionType.Html;
+                    const invitation = isHtml ? buildInvitationHtml(url, artifactsUrl) : buildInvitationText(url, artifactsUrl);
+                    const coercionType = isHtml ? Office.CoercionType.Html : Office.CoercionType.Text;
+
+                    item.body.setSelectedDataAsync(invitation, { coercionType }, insertResult => {
+                        button.disabled = false;
+
+                        if (insertResult.status !== Office.AsyncResultStatus.Succeeded) {
+                            setStatus(`Не удалось вставить приглашение: ${insertResult.error.message}`, true);
+                            return;
+                        }
+
+                        meetingLink.href = url;
+                        meetingLink.textContent = url;
+                        meetingLink.classList.add('visible');
+                        setStatus('Приглашение вставлено в текст письма.');
+                    });
+                });
+            };
+
+            if (!window.Office) {
+                setStatus('Откройте эту страницу из Outlook.', true);
+                button.disabled = true;
+                return;
+            }
+
+            Office.onReady(info => {
+                if (info.host !== Office.HostType.Outlook) {
+                    setStatus('Откройте эту страницу из Outlook.', true);
+                    button.disabled = true;
+                    return;
+                }
+
+                button.addEventListener('click', insertInvitation);
+            });
+        })();
+    </script>
+</body>
+</html>
